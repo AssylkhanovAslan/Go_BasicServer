@@ -32,7 +32,7 @@ func queryGet(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 func postJson(responseWriter http.ResponseWriter, request *http.Request) {
-	fmt.Println("Post. Received request")
+	fmt.Println("PostJson. Received request")
 	if request.Method != "POST" {
 		io.WriteString(responseWriter, "Only waiting for POST request")
 		return
@@ -46,7 +46,16 @@ func postJson(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	fmt.Printf("Body = %v\n", data.Msg)
-	io.WriteString(responseWriter, "Thank you for POST request")
+	io.WriteString(responseWriter, "Thank you for POST json request")
+}
+
+func postForm(responseWriter http.ResponseWriter, request *http.Request) {
+	fmt.Println("PostForm. Received request")
+	msg := request.FormValue("msg")
+
+	fmt.Printf("Msg received = %v\n", msg)
+
+	io.WriteString(responseWriter, "Thank you for POST form request")
 }
 
 func main() {
@@ -54,6 +63,7 @@ func main() {
 	http.HandleFunc("/feedback", feedbackHandler)
 	http.HandleFunc("/query_get", queryGet)
 	http.HandleFunc("/post_json", postJson)
+	http.HandleFunc("/post_form", postForm)
 
 	err := http.ListenAndServe(":80", nil)
 
