@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -30,10 +31,29 @@ func queryGet(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func postJson(responseWriter http.ResponseWriter, request *http.Request) {
+	fmt.Println("Post. Received request")
+	if request.Method != "POST" {
+		io.WriteString(responseWriter, "Only waiting for POST request")
+		return
+	}
+
+	decoder := json.NewDecoder(request.Body)
+	var data post_data
+	err := decoder.Decode(&data)
+	if err != nil {
+		fmt.Printf("Error parsing data = %v\n", err)
+	}
+
+	fmt.Printf("Body = %v\n", data.Msg)
+	io.WriteString(responseWriter, "Thank you for POST request")
+}
+
 func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/feedback", feedbackHandler)
 	http.HandleFunc("/query_get", queryGet)
+	http.HandleFunc("/post_json", postJson)
 
 	err := http.ListenAndServe(":80", nil)
 
