@@ -63,12 +63,18 @@ func postForm(responseWriter http.ResponseWriter, request *http.Request) {
 	io.WriteString(responseWriter, "Thank you for POST form request")
 }
 
+func path(responseWriter http.ResponseWriter, request *http.Request) {
+	fmt.Printf("url = %v\n", request.URL)
+	io.WriteString(responseWriter, "Thank you for path request")
+}
+
 func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/feedback", feedbackHandler)
 	http.HandleFunc("/query_get", queryGet)
 	http.HandleFunc("/post_json", postJson)
 	http.HandleFunc("/post_form", postForm)
+	http.HandleFunc("/path/", path)
 
 	err := http.ListenAndServe(":80", nil)
 
