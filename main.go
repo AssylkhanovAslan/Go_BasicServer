@@ -24,6 +24,11 @@ const QUERY_SEARCH = "search"
 func queryGet(responseWriter http.ResponseWriter, request *http.Request) {
 	searchQuery := request.URL.Query().Get(QUERY_SEARCH)
 	fmt.Printf("SearchQuery = %v\n", searchQuery)
+	if searchQuery == "" {
+		responseWriter.WriteHeader(http.StatusBadRequest)
+		io.WriteString(responseWriter, "{\"msg\":\"missing_field\"}")
+		return
+	}
 
 	_, err := io.WriteString(responseWriter, "QueryGet request was processed. Thank you")
 	if err != nil {
